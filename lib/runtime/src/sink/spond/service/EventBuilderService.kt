@@ -109,7 +109,17 @@ class EventBuilderService(
         ?.let { spondService.ensureImageUploaded(it, base.picture) }
     return base.copy(
       name = title,
-      description = triangleDescription(triangle),
+      description =
+        buildString {
+          base.description
+            ?.split(SEPARATOR_LINE)
+            ?.firstOrNull()
+            ?.trim()
+            ?.takeIf(String::isNotBlank)
+            ?.let(::appendLine)
+
+          append(triangleDescription(triangle))
+        },
       location = location(triangle, triangle.venue),
       start = triangle.start.atSink,
       end = triangle.end.atSink,
@@ -139,7 +149,16 @@ class EventBuilderService(
       }
     return base.copy(
       name = match.title,
-      description = matchDescription(match),
+      description =
+        buildString {
+          base.description
+            ?.split(SEPARATOR_LINE)
+            ?.firstOrNull()
+            ?.trim()
+            ?.takeIf(String::isNotBlank)
+            ?.let(::appendLine)
+          append(matchDescription(match))
+        },
       matchInfo = matchInfo(match, homeMatch, subGroup),
       location = location(match, match.venue),
       start = start,
